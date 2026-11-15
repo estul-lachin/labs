@@ -321,7 +321,7 @@ def page(title, body, depth, current="", path="", description=SITE_DESCRIPTION):
     <div class="crumb"><a class="brand" href="https://uig.me/">{OWNER}</a><a class="section" href="{rel or './'}">Practice labs</a></div>
     <nav>
       <a href="https://uig.me/#work" aria-current="page">Work</a>
-      <a href="https://uig.me/incidents/">Incident reports</a>
+      <a href="https://uig.me/writing/">Writing</a>
       <a href="https://uig.me/about/">About</a>
       <a href="https://uig.me/Estul-Lachin-Resume.pdf">Résumé</a>
     </nav>
