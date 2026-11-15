@@ -33,7 +33,7 @@ CSP = ("default-src 'none'; script-src https://gc.zgo.at; style-src 'self'; "
 PROFILE_URL = "https://github.com/estul-lachin"
 LINKEDIN_URL = "https://www.linkedin.com/in/estul-lachin"
 OWNER = "Estul Lachin"
-BYLINE = "Security operations & IT support · Edmonton, AB"
+BYLINE = "SOC analyst · Edmonton, AB"
 SITE_URL = "https://lab.uig.me"
 SITE_DESCRIPTION = ("Hands-on IT labs I have built and passed, each a resettable Docker environment "
                     "with automated checks.")
@@ -281,11 +281,9 @@ def page(title, body, depth, current="", path="", description=SITE_DESCRIPTION):
     nav = [("Labs", rel or "./", "home")]
     if HAS_PROJECTS or current == "projects":  # no nav link to an empty projects page
         nav.append(("Projects", f"{rel}projects/", "projects"))
-    nav += [("Timeline", f"{rel}timeline/", "timeline"),
-           ("Honeypot", "https://honeypot.uig.me/", "honeypot"),
-           ("Detections", "https://detections.uig.me/", "detections"),
-           ("Guide", "https://guide.uig.me/", "guide")]
-    links = "".join(
+    nav.append(("Timeline", f"{rel}timeline/", "timeline"))
+    # this site's own pages, under the header shared with the other uig.me sites
+    subnav = " · ".join(
         f'<a href="{href}"{" aria-current=\"page\"" if key == current else ""}>{label}</a>'
         for label, href, key in nav
     )
@@ -320,11 +318,17 @@ def page(title, body, depth, current="", path="", description=SITE_DESCRIPTION):
 <body>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="https://uig.me/">{OWNER}</a>
-    <nav>{links}</nav>
+    <div class="crumb"><a class="brand" href="https://uig.me/">{OWNER}</a><a class="section" href="{rel or './'}">Practice labs</a></div>
+    <nav>
+      <a href="https://uig.me/#work" aria-current="page">Work</a>
+      <a href="https://uig.me/incidents/">Incident reports</a>
+      <a href="https://uig.me/about/">About</a>
+      <a href="https://uig.me/Estul-Lachin-Resume.pdf">Résumé</a>
+    </nav>
   </div>
 </header>
 <main class="wrap">
+<p class="subnav">{subnav}</p>
 {body}
 </main>
 <footer class="site-footer">
