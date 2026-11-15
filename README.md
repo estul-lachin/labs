@@ -95,13 +95,14 @@ python3 -m venv .venv && .venv/bin/pip install -r tools/requirements.txt   # onc
 python3 -m http.server -d site 8000                                        # http://localhost:8000
 ```
 
-One-time manual setup, in this order:
+How it is hosted (set up once, nothing to repeat):
 
-1. GitHub → Settings (account) → Pages → **verify the domain `uig.me`** (adds a TXT record in DNS; prevents
-   anyone else from claiming my subdomains)
-2. In the DNS for uig.me, add a CNAME record: `lab` → `estul-lachin.github.io`
-3. Repo Settings → Pages → Source: **GitHub Actions**
-4. Custom domain: `uig.me/labs`; once the certificate is issued, tick **Enforce HTTPS**
+1. The domain `uig.me` is verified for the GitHub account (a TXT record in DNS), so nobody else can claim it.
+2. Repo Settings → Pages → Source: **GitHub Actions**. This repo has **no custom domain**: the account's user site
+   (`estul-lachin.github.io`) owns `uig.me`, and every project site is served under it at `uig.me/<repo name>/`.
+   The repo is named `labs`, so the site is at `uig.me/labs/`. Renaming the repo changes the address.
+3. The old address `lab.uig.me` (DNS: CNAME `lab` → `estul-lachin.github.io`) is answered by the
+   `redirect-lab` repo, which redirects to `uig.me/labs/` and keeps the path.
 
 ## Roadmap
 
