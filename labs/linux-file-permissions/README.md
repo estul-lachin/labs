@@ -96,6 +96,462 @@ Check your work from the host: `./lab check linux-file-permissions`
 <!-- Screenshots: ./lab shot linux-file-permissions ~/Screenshots/<file>.png <name>, then link it as
      ![what it shows](screenshots/<name>.png). Prefer code blocks for terminal output. -->
 
+# My Notes – Linux File Permissions (Debian 12)
+
+## `ls -l`
+
+Check file and directory permissions.
+
+```bash
+ls -l filename
+ls -ld directory
+ls -la
+```
+
+Example:
+
+```text
+-rwxr-xr-- 1 root developers 4096 Nov 15 16:25 myfile
+drwxr-xr-x 4 root root       4096 Nov 15 16:25 archive
+```
+
+Permission breakdown:
+
+```text
+-rwxr-xr--
+ ||| ||| |||
+ ||| ||| +++--- Others
+ ||| +++------- Group
+ +++----------- Owner
+ |
+ +------------- File type
+```
+
+- `-` = Regular file
+- `d` = Directory
+- `l` = Symbolic link
+- `r` = Read
+- `w` = Write
+- `x` = Execute
+
+For directories:
+- `r` = List directory contents
+- `w` = Create, delete or rename entries (normally requires `x` too)
+- `x` = Enter/traverse the directory
+
+## `stat -c '%A %a %U:%G' <file>`
+
+Check the permission mode, owner and group.
+
+```bash
+stat -c '%A %a %U:%G' filename
+```
+
+Example:
+
+```text
+-rwxr----- 740 root:developers
+```
+
+- `%A` = Permissions in symbolic format
+- `%a` = Permissions in numeric format
+- `%U` = Owner username
+- `%G` = Group name
+
+Useful when I need to quickly verify file permissions and ownership.
+
+## `chmod`
+
+Change file or directory permissions.
+
+```bash
+chmod 755 filename
+chmod 644 filename
+chmod 700 filename
+```
+
+Numeric permission values:
+
+```text
+Read (r)    = 4
+Write (w)   = 2
+Execute (x) = 1
+```
+
+Add the values together:
+
+| Number | Permission |
+|---|---|
+| 0 | `---` |
+| 1 | `--x` |
+| 2 | `-w-` |
+| 3 | `-wx` |
+| 4 | `r--` |
+| 5 | `r-x` |
+| 6 | `rw-` |
+| 7 | `rwx` |
+
+The three digits represent:
+
+```text
+Owner : Group : Others
+```
+
+Examples:
+
+```bash
+chmod 777 filename   # rwxrwxrwx
+chmod 755 filename   # rwxr-xr-x
+chmod 740 filename   # rwxr-----
+chmod 644 filename   # rw-r--r--
+chmod 600 filename   # rw-------
+```
+
+Common permission modes:
+
+| Mode | Typical use |
+|---|---|
+| 644 | Normal files |
+| 755 | Directories and executable scripts |
+| 700 | Private directories |
+| 600 | Private files / SSH private keys |
+| 640 | Restricted configuration files |
+| 777 | Everyone can read, write and execute (usually unsafe) |
+
+Can also use symbolic permissions:
+
+```bash
+chmod u+x filename   # Add execute for owner
+chmod g+w filename   # Add write for group
+chmod o-r filename   # Remove read for others
+chmod a+r filename   # Add read for everyone
+```
+
+Recursive permission changes:
+
+```bash
+chmod -R 755 folder
+```
+
+Be careful with `-R`, especially when changing permissions on system directories.
+
+## `chown` and `chgrp`
+
+Change file owner and group.
+
+Change owner only:
+
+```bash
+chown user filename
+```
+
+Change group only:
+
+```bash
+chgrp group filename
+```
+
+Or:
+
+```bash
+chown :group filename
+```
+
+Change both owner and group:
+
+```bash
+chown user:group filename
+```
+
+Example:
+
+```bash
+chown pia:printers filename
+```
+
+Change ownership of a folder and everything under it:
+
+```bash
+chown -R user:group folder
+```
+
+Example:
+
+```bash
+chown -R pia:printers archive
+```
+
+Important:
+- `chown` changes ownership, not permissions.
+- `chmod` changes permissions, not ownership.
+- Use `sudo` if root privileges are required.
+
+Verify:
+
+```bash
+ls -l filename
+stat -c '%U:%G %a %A' filename
+```
+
+## SUID vs SGID vs Sticky Bit
+
+These are special permission bits in Linux.
+
+### 1. SUID (Set User ID)
+
+Numeric value: `4000`
+
+When an executable has SUID set, it runs with the effective user ID of the file owner.
+
+Example:
+
+```bash
+ls -l /usr/bin/passwd
+```
+
+Typical output:
+
+```text
+-rwsr-xr-x 1 root root 72056 May 30 2024 /usr/bin/passwd
+```
+
+```text
+-rwsr-xr-x
+   ^
+   s = SUID
+```
+
+Why does `passwd` need SUID?
+
+Normal users cannot directly modify `/etc/shadow`, but they need to be able to change their own passwords.
+
+The SUID bit allows the `passwd` program to perform the required operation with the effective privileges of its owner (normally root).
+
+### 2. SGID (Set Group ID)
+
+Numeric value: `2000`
+
+For executable files:
+- The program runs with the effective group ID of the file's group.
+
+For directories:
+- New files and subdirectories normally inherit the directory's group.
+
+Example:
+
+```bash
+mkdir shared
+chown root:printers shared
+chmod 2775 shared
+```
+
+Check:
+
+```bash
+ls -ld shared
+```
+
+Expected:
+
+```text
+drwxrwsr-x root printers shared
+```
+
+The `s` in the group execute position means SGID.
+
+### 3. Sticky Bit
+
+Numeric value: `1000`
+
+Usually used on shared directories such as `/tmp`.
+
+Example:
+
+```bash
+ls -ld /tmp
+```
+
+Normal output:
+
+```text
+drwxrwxrwt 1 root root 4096 Nov 15 16:25 /tmp
+```
+
+The `t` at the end indicates Sticky Bit.
+
+It prevents ordinary users from deleting or renaming files belonging to other users in a shared directory (unless they own the directory or have sufficient privileges).
+
+Set Sticky Bit:
+
+```bash
+chmod +t /tmp
+```
+
+Or set the full permission mode:
+
+```bash
+chmod 1777 /tmp
+```
+
+### Special permission summary
+
+| Special bit | Numeric value | Symbol | Main purpose |
+|---|---:|---|---|
+| SUID | 4000 | `s` | Use file owner's effective identity |
+| SGID | 2000 | `s` | Use file group's effective identity / directory group inheritance |
+| Sticky | 1000 | `t` | Protect files in shared directories |
+
+Set special permissions:
+
+```bash
+chmod 4755 filename   # SUID
+chmod 2755 directory  # SGID
+chmod 1777 directory  # Sticky Bit
+```
+
+Find files with special permissions:
+
+```bash
+find / -type f -perm -4000 2>/dev/null  # SUID
+find / -type f -perm -2000 2>/dev/null  # SGID
+find / -type d -perm -1000 2>/dev/null  # Sticky Bit
+```
+
+Note: If the execute permission is missing, special bits may appear as uppercase `S` or `T` instead of lowercase `s` or `t`.
+
+## Permission Audit
+
+Useful commands when checking for incorrect permissions or ownership.
+
+### 1. Find unexpected SUID files
+
+```bash
+find / -type f -perm -4000 2>/dev/null
+```
+
+Not every SUID file is suspicious. Compare the results with expected system binaries.
+
+### 2. Find world-writable files under `/etc`
+
+```bash
+find /etc -type f -perm -0002 -ls
+```
+
+`-0002` means others have write permission.
+
+World-writable configuration files can be a security risk.
+
+### 3. Find programs not owned by root
+
+```bash
+find /usr/local/bin -type f ! -user root -ls
+```
+
+Check whether executable files are owned by the expected user.
+
+### 4. Find world-writable directories without Sticky Bit
+
+```bash
+find / -type d -perm -0002 ! -perm -1000 -ls 2>/dev/null
+```
+
+A normal `/tmp` should have Sticky Bit enabled.
+
+### 5. Save audit findings
+
+Example:
+
+```bash
+cat > /root/findings.txt <<'EOF'
+SUID_BACKDOOR=/var/tmp/.helper
+WORLD_WRITABLE=/etc/cron.d/cleanup
+BAD_OWNER=/usr/local/bin/print-backup
+NO_STICKY=/tmp
+EOF
+```
+
+Check the result:
+
+```bash
+cat /root/findings.txt
+```
+
+## Permission Remediation
+
+After identifying the incorrect permissions, fix them carefully.
+
+```bash
+# Remove the suspicious SUID file
+rm -f /var/tmp/.helper
+
+# Set cron configuration file permissions to 644
+chmod 644 /etc/cron.d/cleanup
+
+# Change program ownership to root:root
+chown root:root /usr/local/bin/print-backup
+
+# Restore /tmp permissions to 1777
+chmod 1777 /tmp
+```
+
+Verify:
+
+```bash
+ls -l /etc/cron.d/cleanup
+ls -l /usr/local/bin/print-backup
+ls -ld /tmp
+
+# Confirm the suspicious file is gone
+ls -l /var/tmp/.helper
+```
+
+Expected results:
+
+```text
+/etc/cron.d/cleanup        -> 644
+/usr/local/bin/print-backup -> root:root
+/tmp                       -> 1777
+/var/tmp/.helper           -> Does not exist
+```
+
+Important: When removing a suspicious SUID file, do not remove legitimate system SUID binaries such as `/usr/bin/passwd` or `/usr/bin/su`.
+
+---
+
+## Quick Reference
+
+```bash
+# Check permissions
+ls -l filename
+stat -c '%A %a %U:%G' filename
+
+# Change permissions
+chmod 755 filename
+
+# Change owner and group
+chown user:group filename
+
+# Change recursively
+chown -R user:group folder
+chmod -R 755 folder
+
+# Find SUID files
+find / -type f -perm -4000 2>/dev/null
+
+# Find SGID files
+find / -type f -perm -2000 2>/dev/null
+
+# Find world-writable files
+find / -type f -perm -0002 2>/dev/null
+
+# Check directory Sticky Bit
+ls -ld /tmp
+
+# Restore normal /tmp permissions
+chmod 1777 /tmp
+```
+
+**My takeaway:** `chmod` controls what users can do, `chown` controls who owns the file, and special permission bits provide additional privilege or directory behavior. Always check the current permissions and ownership before making changes.
 
 ## Related
 
