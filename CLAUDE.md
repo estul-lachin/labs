@@ -2,12 +2,12 @@
 
 uig-lab turns every IT skill the owner learns into a Docker lab (one skill = one lab = one directory under
 `labs/`), managed by the bash CLI `./lab`. Passes are recorded in `progress.jsonl` and published on the static
-showcase https://lab.uig.me. Full design: `docs/design.md` (the source of truth).
+showcase https://uig.me/labs. Full design: `docs/design.md` (the source of truth).
 
 | Part | Runs where | Who can access | Purpose |
 |---|---|---|---|
 | `./lab` CLI | Owner's Mac (Apple Silicon) | Only the owner | Start, check, reset labs |
-| Showcase site `lab.uig.me` | GitHub Pages (static) | Everyone | Read-only portfolio of passed labs |
+| Showcase site `uig.me/labs` | GitHub Pages (static) | Everyone | Read-only portfolio of passed labs |
 | Local dashboard (phase 3) | Owner's Mac, 127.0.0.1 | Only the owner | A web UI for `./lab` |
 
 **The dashboard is never public.** It can start containers; only the static showcase (no backend, no actions)

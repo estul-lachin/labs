@@ -2,7 +2,7 @@
 
 Every IT skill I learn, turned into a small Docker lab I can reset and redo at any time.
 
-**Showcase: https://lab.uig.me**: which labs I've done, what I learned, and when I passed them.
+**Showcase: https://uig.me/labs**: which labs I've done, what I learned, and when I passed them.
 
 Inspired by [stratosphereips/stratocyberlab](https://github.com/stratosphereips/stratocyberlab), but lighter:
 one bash script manages labs locally, and the public site is purely static.
@@ -101,7 +101,7 @@ One-time manual setup, in this order:
    anyone else from claiming my subdomains)
 2. In the DNS for uig.me, add a CNAME record: `lab` → `estul-lachin.github.io`
 3. Repo Settings → Pages → Source: **GitHub Actions**
-4. Custom domain: `lab.uig.me`; once the certificate is issued, tick **Enforce HTTPS**
+4. Custom domain: `uig.me/labs`; once the certificate is issued, tick **Enforce HTTPS**
 
 ## Roadmap
 
@@ -109,7 +109,7 @@ A local dashboard (phase 3):
 
 - A UI layer over `./lab`: every action runs `./lab ... --json` via subprocess; it never calls Docker directly
 - Runs on the host, not in a container; never mounts the Docker socket
-- Listens on 127.0.0.1 only, no login; **never deployed to lab.uig.me or any public address**
+- Listens on 127.0.0.1 only, no login; **never deployed to uig.me/labs or any public address**
 - Python 3 + FastAPI + Jinja2 + a little vanilla JS, code in `dashboard/`, started with `./lab dashboard`
 - Pages: lab list and status, start/stop/reset/check buttons, rendered README, check results
 - Lab names must match `[a-z0-9-]` and exist, to prevent command injection

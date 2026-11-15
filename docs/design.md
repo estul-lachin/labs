@@ -1,4 +1,4 @@
-# Task: Build uig-lab (a Docker lab for every skill I learn + a public showcase at lab.uig.me)
+# Task: Build uig-lab (a Docker lab for every skill I learn + a public showcase at uig.me/labs)
 
 > Complete instructions for Claude Code, in three phases. **Do phases 1 and 2 this time**; phase 3 comes later.
 >
@@ -7,7 +7,7 @@
 > | GitHub account | `estul-lachin` (logged in with `gh`) |
 > | Repo | `estul-lachin/uig-lab` (public) — https://github.com/estul-lachin/uig-lab |
 > | CLI | `./lab` |
-> | Public showcase | https://lab.uig.me |
+> | Public showcase | https://uig.me/labs |
 >
 > Keep this file in the repo as `docs/design.md` — it is the source of truth for the design.
 
@@ -15,7 +15,7 @@
 
 Turn every computer/IT skill I learn into a small Docker environment I can reset and redo at any time:
 **one skill = one lab = one directory under `labs/`**.
-Each time I complete a lab, a progress record is committed to the repo and the public site `https://lab.uig.me`
+Each time I complete a lab, a progress record is committed to the repo and the public site `https://uig.me/labs`
 updates automatically. The site is a portfolio of what I have learned and practiced, linked from my résumé
 (I'm job hunting in Canada).
 
@@ -29,7 +29,7 @@ Language: everything is in English — READMEs, code comments, CLI output and th
 | Part | Runs where | Who can access | Purpose |
 |---|---|---|---|
 | `./lab` CLI | My Mac (Apple Silicon) | Only me | Start, check, reset labs |
-| Showcase site `lab.uig.me` | GitHub Pages (static) | Everyone | Read-only: which labs I've done, what I learned, when I passed |
+| Showcase site `uig.me/labs` | GitHub Pages (static) | Everyone | Read-only: which labs I've done, what I learned, when I passed |
 | Local dashboard (phase 3) | My Mac, 127.0.0.1 | Only me | A web UI for `./lab` |
 
 **The local dashboard can start containers and must never be exposed to the internet. Only the static showcase
@@ -121,7 +121,7 @@ One record per line, for example:
   Collect them from the `--json` output internally (run check in JSON mode, render the human output from it)
 - Timestamp: local time, ISO 8601 with offset. Must work with macOS BSD `date` (no `date -I` / `%:z`):
   generate `+%Y-%m-%dT%H:%M:%S%z` and insert the colon in the offset yourself
-- After writing, print: `Recorded. Commit to publish on lab.uig.me: git add progress.jsonl && git commit -m "pass: <name>"`
+- After writing, print: `Recorded. Commit to publish on uig.me/labs: git add progress.jsonl && git commit -m "pass: <name>"`
 - Never auto-commit or push
 - **Only my own passes belong in this file.** Never commit pass records produced by an AI session, by
   verification, or by `solve`. If verification creates a record, remove it before committing —
@@ -218,7 +218,7 @@ architecture will show up here.
 
 ---
 
-## Phase 2: Showcase site at lab.uig.me
+## Phase 2: Showcase site at uig.me/labs
 
 ### Build
 - `tools/build_site.py`: Python 3, only depends on `markdown` (listed in `tools/requirements.txt`)
@@ -288,7 +288,7 @@ meaning:
      prevents anyone else from claiming my subdomains)
   2. In the DNS for uig.me, add a CNAME record: `lab` → `estul-lachin.github.io`
   3. Repo Settings → Pages → Source: **GitHub Actions**
-  4. Custom domain: `lab.uig.me`; once the certificate is issued, tick **Enforce HTTPS**
+  4. Custom domain: `uig.me/labs`; once the certificate is issued, tick **Enforce HTTPS**
 
 ---
 
@@ -298,7 +298,7 @@ Record these principles in the README under "Roadmap":
 - The dashboard is a UI layer over `./lab`: every action runs `./lab ... --json` via subprocess;
   it never calls Docker directly
 - Runs on the host, not in a container; never mounts the Docker socket
-- Listens on 127.0.0.1 only, no login; **never deployed to lab.uig.me or any public address**
+- Listens on 127.0.0.1 only, no login; **never deployed to uig.me/labs or any public address**
 - Python 3 + FastAPI + Jinja2 + a little vanilla JS, code in `dashboard/`, started with `./lab dashboard`
 - Pages: lab list and status, start/stop/reset/check buttons, rendered README, check results
 - Lab names must match `[a-z0-9-]` and exist, to prevent command injection
@@ -307,7 +307,7 @@ Record these principles in the README under "Roadmap":
 ---
 
 ## Main README.md must include
-- One-line description + showcase link https://lab.uig.me + link to the inspiration
+- One-line description + showcase link https://uig.me/labs + link to the inspiration
 - Requirements: Docker Desktop or OrbStack (Compose v2+), bash 4+ (macOS: `brew install bash`),
   Python 3 (only for building the showcase)
 - Quick start: list / up / shell / check / down / reset

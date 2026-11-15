@@ -1,6 +1,6 @@
 # windows-admin-tools
 
-<!-- A documented project, written entirely by me. It is shown on lab.uig.me as
+<!-- A documented project, written entirely by me. It is shown on uig.me/labs as
      "documented, not auto-checked" once DATE is set in project.conf.
      Screenshots: ./lab shot windows-admin-tools ~/Screenshots/<file>.png <name>, then link them as
      ![what it shows](screenshots/<name>.png). Empty sections are hidden on the site. -->

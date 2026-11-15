@@ -1,4 +1,4 @@
-/* lab.uig.me - the only stylesheet. No JS.
+/* uig.me/labs - the only stylesheet. No JS.
    Terminal theme shared by uig.me, lab, honeypot and detections: keep the tokens and the
    "shared chrome" block identical across the four sites. */
 
@@ -86,7 +86,7 @@ h3 { font-size: 1.05rem; margin: 0 0 6px; }
   .site-header { position: static; background: #fff; backdrop-filter: none; }
 }
 
-/* ---------------------------------------------------------------- lab.uig.me */
+/* ---------------------------------------------------------------- uig.me/labs */
 
 main.wrap { padding-top: 32px; }
 

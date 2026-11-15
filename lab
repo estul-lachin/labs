@@ -255,7 +255,7 @@ cmd_project() {
   copy_template project "$n" "$cat"
   cat <<EOF
 Created projects/$n (category: $cat). A project is documented work that can't be a Docker lab
-(VMs, Windows, GUI tools); lab.uig.me marks it "documented, not auto-checked". Edit next:
+(VMs, Windows, GUI tools); uig.me/labs marks it "documented, not auto-checked". Edit next:
   projects/$n/project.conf   title, summary, tags; set DATE when it is finished to publish it
   projects/$n/README.md      the write-up, in your own words
 Screenshots: ./lab shot $n ~/Screenshots/<file>.png <name>
@@ -338,7 +338,7 @@ cmd_check() {
     for d in "${checks[@]}"; do cj+="${cj:+,}\"$d\""; done
     printf '{"lab":"%s","passed_at":"%s","pass":%d,"total":%d,"checks":[%s]}\n' \
       "$n" "$ts" "$pass" "$total" "$cj" >>"$PROGRESS"
-    local msg="Recorded. Commit to publish on lab.uig.me: git add progress.jsonl && git commit -m \"pass: $n\""
+    local msg="Recorded. Commit to publish on uig.me/labs: git add progress.jsonl && git commit -m \"pass: $n\""
     if [ $json = 1 ]; then printf '%s\n' "$msg" >&2; else printf '\n%s\n' "$msg"; fi
   fi
   return 0

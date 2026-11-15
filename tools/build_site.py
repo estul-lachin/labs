@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the static showcase for lab.uig.me into site/.
+"""Build the static showcase for uig.me/labs into site/.
 
 Reads labs/*/lab.conf, labs/*/README.md, labs/*/screenshots/, projects/*/ (project.conf, README.md,
 screenshots/) and progress.jsonl. Never reads check.sh or solution/ (except for the final leak check, which
@@ -34,7 +34,7 @@ PROFILE_URL = "https://github.com/estul-lachin"
 LINKEDIN_URL = "https://www.linkedin.com/in/estul-lachin"
 OWNER = "Estul Lachin"
 BYLINE = "SOC analyst · Edmonton, AB"
-SITE_URL = "https://lab.uig.me"
+SITE_URL = "https://uig.me/labs"
 SITE_DESCRIPTION = ("Hands-on IT labs I have built and passed, each a resettable Docker environment "
                     "with automated checks.")
 
@@ -277,7 +277,7 @@ def fmt_date(dt):
 def page(title, body, depth, current="", path="", description=SITE_DESCRIPTION):
     # depth = how deep the page sits below the site root; None = absolute links (404 page,
     # which GitHub Pages serves at any missing URL). path = the page's URL path, for link previews.
-    rel = "/" if depth is None else "../" * depth
+    rel = "/labs/" if depth is None else "../" * depth
     nav = [("Labs", rel or "./", "home")]
     if HAS_PROJECTS or current == "projects":  # no nav link to an empty projects page
         nav.append(("Projects", f"{rel}projects/", "projects"))
@@ -298,7 +298,7 @@ def page(title, body, depth, current="", path="", description=SITE_DESCRIPTION):
 <title>{e(full_title)}</title>
 <meta name="description" content="{e(description)}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="{OWNER} · lab.uig.me">
+<meta property="og:site_name" content="{OWNER} · uig.me/labs">
 <meta property="og:title" content="{e(full_title)}">
 <meta property="og:description" content="{e(description)}">
 <meta property="og:url" content="{e(f"{SITE_URL}/{path}")}">
@@ -531,7 +531,7 @@ def build_summary(labs, projects):
 
 
 def build_404():
-    body = '<h1>Not found</h1><p>That page does not exist. <a href="/">Back to the labs</a>.</p>'
+    body = '<h1>Not found</h1><p>That page does not exist. <a href="/labs/">Back to the labs</a>.</p>'
     return page("Not found", body, None)
 
 
@@ -569,7 +569,7 @@ def write(path, content):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Build the lab.uig.me showcase.")
+    ap = argparse.ArgumentParser(description="Build the uig.me/labs showcase.")
     ap.add_argument("--progress", type=Path, default=ROOT / "progress.jsonl",
                     help="progress file to read (default: progress.jsonl)")
     ap.add_argument("--out", type=Path, default=ROOT / "site", help="output directory (default: site/)")

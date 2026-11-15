@@ -1,6 +1,6 @@
 # sentinel-incident-triage
 
-<!-- A documented project, written entirely by me. It is shown on lab.uig.me as
+<!-- A documented project, written entirely by me. It is shown on uig.me/labs as
      "documented, not auto-checked" once DATE is set in project.conf.
      Screenshots: ./lab shot sentinel-incident-triage ~/Screenshots/<file>.png <name>, then link them as
      ![what it shows](screenshots/<name>.png). Empty sections are hidden on the site. -->
@@ -9,14 +9,14 @@
 
 Hand triage of real Microsoft Sentinel incidents from my internet-facing honeypot (Cowrie for SSH/Telnet,
 Suricata for the network). The incidents come from my own analytics rules
-([detections.uig.me](https://detections.uig.me)) and are enriched by my SOAR playbook (AbuseIPDB score,
+([uig.me/detections](https://uig.me/detections)) and are enriched by my SOAR playbook (AbuseIPDB score,
 honeypot history, tags). The playbook only enriches; deciding what an incident means and closing it is
 the analyst's job, and that is what this project is.
 
 In the first session I took one attacker end to end: six open incidents, five visits over three days,
 four different rules. Every incident was claimed, investigated in KQL, classified and closed with a
 written comment. The counts are published from the `SecurityIncident` table on
-[guide.uig.me](https://guide.uig.me) (closes by a person, not by automation).
+[uig.me/investigations](https://uig.me/investigations) (closes by a person, not by automation).
 
 Attacker IPs are redacted in the screenshots.
 
@@ -116,8 +116,8 @@ impact. Each comment points to the others, so the next analyst sees one actor, n
 
 ## Related
 
-- [guide.uig.me](https://guide.uig.me): incident ledger (closes by me vs. by automation) and the
+- [uig.me/investigations](https://uig.me/investigations): incident ledger (closes by me vs. by automation) and the
   three-SIEM playbooks
-- [detections.uig.me](https://detections.uig.me): the analytics rules behind these incidents
-- [honeypot.uig.me](https://honeypot.uig.me): the sensors and what they see
+- [uig.me/detections](https://uig.me/detections): the analytics rules behind these incidents
+- [uig.me/honeypot](https://uig.me/honeypot): the sensors and what they see
 - Labs: [splunk-ir-workflow](../../labs/splunk-ir-workflow/), [wazuh-alert-triage](../../labs/wazuh-alert-triage/)
