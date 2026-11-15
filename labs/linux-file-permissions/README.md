@@ -478,80 +478,53 @@ cat /root/findings.txt
 
 ## Permission Remediation
 
-After identifying the incorrect permissions, fix them carefully.
+After completing a permission audit, the next step is to fix the issues found during the inspection.
+
+The exact commands depend on the affected files and directories.
+
+### Common remediation commands
 
 ```bash
-# Remove the suspicious SUID file
-rm -f /var/tmp/.helper
+# Remove a suspicious file
+sudo rm <suspicious-file>
 
-# Set cron configuration file permissions to 644
-chmod 644 /etc/cron.d/cleanup
+# Change file permissions
+sudo chmod 644 <configuration-file>
 
-# Change program ownership to root:root
-chown root:root /usr/local/bin/print-backup
+# Change file ownership and group
+sudo chown root:root <program-file>
 
-# Restore /tmp permissions to 1777
-chmod 1777 /tmp
+# Restore standard shared directory permissions
+sudo chmod 1777 <temporary-directory>
 ```
 
-Verify:
+### Verify the changes
+
+Always verify the permissions and ownership after making changes.
 
 ```bash
-ls -l /etc/cron.d/cleanup
-ls -l /usr/local/bin/print-backup
-ls -ld /tmp
+# Check file permissions
+ls -l <file>
 
-# Confirm the suspicious file is gone
-ls -l /var/tmp/.helper
+# Check directory permissions
+ls -ld <directory>
+
+# Check owner, group and numeric mode
+stat -c '%A %a %U:%G' <file>
+
+# Check whether a file still exists
+test -e <file> && echo "File exists" || echo "File not found"
 ```
 
-Expected results:
+### Important notes
 
-```text
-/etc/cron.d/cleanup        -> 644
-/usr/local/bin/print-backup -> root:root
-/tmp                       -> 1777
-/var/tmp/.helper           -> Does not exist
-```
+- Do not remove legitimate system SUID or SGID binaries.
+- Always verify a suspicious file before deleting it.
+- Avoid using recursive permission changes unless necessary.
+- Keep system configuration files under the appropriate ownership.
+- Be careful when changing permissions on shared directories.
 
-Important: When removing a suspicious SUID file, do not remove legitimate system SUID binaries such as `/usr/bin/passwd` or `/usr/bin/su`.
-
----
-
-## Quick Reference
-
-```bash
-# Check permissions
-ls -l filename
-stat -c '%A %a %U:%G' filename
-
-# Change permissions
-chmod 755 filename
-
-# Change owner and group
-chown user:group filename
-
-# Change recursively
-chown -R user:group folder
-chmod -R 755 folder
-
-# Find SUID files
-find / -type f -perm -4000 2>/dev/null
-
-# Find SGID files
-find / -type f -perm -2000 2>/dev/null
-
-# Find world-writable files
-find / -type f -perm -0002 2>/dev/null
-
-# Check directory Sticky Bit
-ls -ld /tmp
-
-# Restore normal /tmp permissions
-chmod 1777 /tmp
-```
-
-**My takeaway:** `chmod` controls what users can do, `chown` controls who owns the file, and special permission bits provide additional privilege or directory behavior. Always check the current permissions and ownership before making changes.
+**My takeaway:** Finding a permission issue is only the first step. Always verify the affected file, understand why the permission is incorrect, apply the smallest necessary change, and check the result afterward.
 
 ## Related
 
